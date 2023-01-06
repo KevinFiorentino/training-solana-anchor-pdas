@@ -20,23 +20,23 @@ describe("Solana Movies Test", () => {
     return v;
   }
 
-  it("Is initialized!", async () => {
+  it("Add movie", async () => {
 
-    const gifUrl = "https://test.com";
+    const movieName = "Back to the Future I";
 
     const [pda] = await PublicKey.findProgramAddress(
       [
-        stringToBytes("gif_account"),
+        stringToBytes("movie_account"),
         anchor.getProvider().wallet.publicKey.toBytes(),
-        stringToBytes(gifUrl),
+        stringToBytes(movieName),
       ],
       program.programId
     );
 
     let tx = await program.methods
-      .initialize(gifUrl)
+      .addMovie(movieName)
       .accounts({
-        movieGif: pda,
+        movie: pda,
         user: anchor.getProvider().wallet.publicKey,
         systemProgram: SystemProgram.programId,
       })
@@ -46,12 +46,12 @@ describe("Solana Movies Test", () => {
   });
 
   it("Get all movies", async () => {
-    const gifsByOwner = await program.account.movieGif.all();
-    assert.equal(1, gifsByOwner.length);
+    const movies = await program.account.movie.all();
+    assert.equal(1, movies.length);
   });
 
-  it("Finds movies by pubkey!", async () => {
-    const gifsByOwner = await program.account.movieGif.all([
+  it("Finds movies by public key", async () => {
+    const moviesByOwner = await program.account.movie.all([
       {
         memcmp: {
           bytes: anchor.getProvider().wallet.publicKey.toBase58(),
@@ -59,7 +59,7 @@ describe("Solana Movies Test", () => {
         },
       },
     ]);
-    assert.equal(1, gifsByOwner.length);
+    assert.equal(1, moviesByOwner.length);
   });
   
 });

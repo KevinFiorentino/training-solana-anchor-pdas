@@ -5,29 +5,29 @@ declare_id!("8WiX3pvaDXPppRY6vZqLgwkhs6pUoKQt9ycCFwq2rqVK");
 #[program]
 pub mod solana_movies {
     use super::*;
-    pub fn initialize(ctx: Context<Initialize>, gif_url: String) -> Result<()> {
-        let movie_gif = &mut ctx.accounts.movie_gif;
+    pub fn add_movie(ctx: Context<AddMovie>, movie_name: String) -> Result<()> {
+        let movie = &mut ctx.accounts.movie;
 
-        movie_gif.owner = ctx.accounts.user.key();
-        movie_gif.gif_url = gif_url;
+        movie.owner = ctx.accounts.user.key();
+        movie.movie_name = movie_name;
         
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-#[instruction(gif_url: String)]
-pub struct Initialize<'info> {
+#[instruction(movie_name: String)]
+pub struct AddMovie<'info> {
     #[account(
         init,
         seeds = [
-            b"gif_account", user.key().as_ref(), gif_url.as_bytes()
+            b"movie_account", user.key().as_ref(), movie_name.as_bytes()
         ],
         bump,
         payer = user,
-        space = 8 + 32 + gif_url.as_bytes().len() + 4
+        space = 8 + 32 + movie_name.as_bytes().len() + 4
     )]
-    pub movie_gif: Account<'info, MovieGif>,
+    pub movie: Account<'info, Movie>,
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program<'info, System>,
@@ -35,7 +35,7 @@ pub struct Initialize<'info> {
 
 #[account]
 #[derive(Default)]
-pub struct MovieGif {
+pub struct Movie {
     pub owner: Pubkey,
-    pub gif_url: String,
+    pub movie_name: String,
 }

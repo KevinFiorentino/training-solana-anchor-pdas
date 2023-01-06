@@ -11,11 +11,11 @@ A Solana program build with Anchor and PDAs
 ### Deploy program
 
 - `anchor build`
-- `solana address -k target/deploy/relochs_solana-keypair.json`
+- `solana address -k target/deploy/xxxxx-keypair.json`
 - Replace Program ID in `lib.rs` and `Anchor.toml`
 - `anchor build` (again)
 - `anchor deploy`
 
-### Test
+### Test localhost
 
 - `anchor test --provider.cluster localnet`
